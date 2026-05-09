@@ -23,7 +23,11 @@
 
     <ul>
         {% for todo in todos %}
-            <li>{{ todo.title }}</li>
+            <li>{{ todo }}
+                <a href="/delete/{{ todo.id }}">
+                    删除
+                </a>
+            </li>
         {% endfor %}
     </ul>
 

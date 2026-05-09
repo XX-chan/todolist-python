@@ -24,12 +24,19 @@ def home():
     return render_template(
         "index.html",
         todos=todos)
+    # 右边todos是Python的变量，即上面的todos=service.list()
+    # 左边的todos是送进HTML的变量的名字。
 
 @app.route("/add", methods=["POST"])
 def add():
     title = request.form.get("title")
     if title:
         service.add(title)
+    return redirect(url_for("home"))
+
+@app.route("/delete/<int:todo_id>")
+def delete(todo_id):
+    service.remove(todo_id)
     return redirect(url_for("home"))
 
 # 确保只有直接运行这个文件时才能执行内部代码，import无效。
