@@ -1,4 +1,4 @@
-from flask import Flask, request,render_template
+from flask import Flask, request,render_template,redirect,url_for
 import sys
 import os
 
@@ -25,13 +25,12 @@ def home():
         "index.html",
         todos=todos)
 
-@app.route("/add", methods=["GET"])
+@app.route("/add", methods=["POST"])
 def add():
-    title = request.args.get("title")
-    if not title:
-        return "缺少title"
-    service.add(title)
-    return "添加成功"
+    title = request.form.get("title")
+    if title:
+        service.add(title)
+    return redirect(url_for("home"))
 
 # 确保只有直接运行这个文件时才能执行内部代码，import无效。
 if __name__ == "__main__":
