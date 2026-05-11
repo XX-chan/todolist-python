@@ -42,9 +42,12 @@ class TodoService:
         if not todo:
             return False
         
-        todo.completed = True
+        if todo.completed:
+            todo.completed = False
+        else:
+            todo.completed = True
         self.store.save(self.todos)
-        return True
+        return todo.completed
 
     # 更新此id的内容为title
     def update(self,id,title):
