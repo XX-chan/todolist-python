@@ -6,10 +6,27 @@
     <style>
         body {
             font-family: Arial;
+            width: 600px;
+            margin: 40px auto;
+        }
+        
+        input{
+            padding: 8px;
+            width: 300px;
+        }
+
+        button{
+            padding: 8px 12px;
         }
 
         li {
             color: blue;
+            margin-top: 7px;
+        }
+
+        .completed {
+            color:gray;
+            text-decoration: line-through;
         }
     </style>
 </head>
@@ -23,7 +40,18 @@
 
     <ul>
         {% for todo in todos %}
-            <li>{{ todo }}
+            <li class="{% if todo.completed %} completed {% endif %}">
+                {{ todo }}
+                {% if todo.completed %}
+                    <a href="/complete/{{ todo.id }}">
+                        取消
+                    </a>
+                {% else %}
+                    <a href="/complete/{{ todo.id }}">
+                        完成
+                    </a>
+                {% endif %}
+                    
                 <a href="/delete/{{ todo.id }}">
                     删除
                 </a>

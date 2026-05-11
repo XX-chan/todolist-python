@@ -39,6 +39,11 @@ def delete(todo_id):
     service.remove(todo_id)
     return redirect(url_for("home"))
 
+@app.route("/complete/<int:todo_id>")
+def complete(todo_id):
+    service.complete(todo_id)
+    return redirect(url_for("home"))
+
 # 确保只有直接运行这个文件时才能执行内部代码，import无效。
 if __name__ == "__main__":
     app.run(debug=True)

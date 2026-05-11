@@ -5,6 +5,6 @@ class Todo:
         self.completed = completed
 
     def __repr__(self):
-        return f"[{'√' if self.completed else ' '}] {self.id}: {self.title}"
+        return f"[{' √ ' if self.completed else '   '}] {self.id}: {self.title}"
     
     
