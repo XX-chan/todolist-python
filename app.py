@@ -44,6 +44,17 @@ def complete(todo_id):
     service.complete(todo_id)
     return redirect(url_for("home"))
 
+@app.route("/edit/<int:todo_id>")
+def edit_page(todo_id):
+    todo=service.find_todo(todo_id)
+    return render_template("edit.html",todo=todo)
+
+@app.route("/edit/<int:todo_id>",methods=["POST"])
+def edit(todo_id):
+    title=request.form.get("title")
+    service.update(todo_id,title)
+    return redirect(url_for("home"))
+
 # 确保只有直接运行这个文件时才能执行内部代码，import无效。
 if __name__ == "__main__":
     app.run(debug=True)
