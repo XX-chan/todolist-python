@@ -6,7 +6,7 @@ import os
 BASE_DIR = os.path.dirname(__file__)
 sys.path.append(os.path.join(BASE_DIR, "src"))
 
-from src.store.sqlite_store import SqliteTodoStore
+from store.SqliteTodoStore import SqliteTodoStore
 from src.service.todo_service import TodoService
 
 app = Flask(__name__)

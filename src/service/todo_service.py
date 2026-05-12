@@ -35,7 +35,8 @@ class TodoService:
            
             
     def list(self):
-        return self.todos
+        todos_sorted = sorted(self.todos, key=lambda t:t.completed)
+        return todos_sorted
     
     def complete(self,id):
         todo = self.find_todo(id)

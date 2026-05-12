@@ -14,7 +14,9 @@ class SqliteTodoStore:
         CREATE TABLE IF NOT EXISTS todos(
             id INTEGER PRIMARY KEY,
             title TEXT,
-            completed BOOLEAN  )""")
+            completed BOOLEAN,
+            completed_at DATE,
+            user_id INTEGER  )""")
         self.conn.commit()   # commit代表真正写进硬盘
 
     # 现在的save是全量覆盖，先清空数据库，再把内存的todos写进去。
