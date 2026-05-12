@@ -16,7 +16,13 @@
     <ul>
         {% for todo in todos %}
             <li class="{% if todo.completed %} completed {% endif %}">
-                {{ todo }}
+                [{{ '√' if todo.completed else ' '}}] {{ todo.id }} : {{ todo.title }}
+                {% if todo.completed %}
+                    {% if todo.completed_at %}
+                        ✅️ {{ todo.completed_at }}
+                    {% endif %}
+                {% endif %}
+
                 {% if todo.completed %}
                     <a href="/complete/{{ todo.id }}">
                         取消

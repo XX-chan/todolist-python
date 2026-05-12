@@ -1,4 +1,5 @@
 from model.todo import Todo
+from datetime import datetime 
 
 class TodoService:
     def __init__(self,store):
@@ -44,8 +45,10 @@ class TodoService:
         
         if todo.completed:
             todo.completed = False
+            todo.completed_at = None
         else:
             todo.completed = True
+            todo.completed_at = datetime.now().date()
         self.store.save(self.todos)
         return todo.completed
 
