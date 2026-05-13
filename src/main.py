@@ -1,5 +1,5 @@
 import sys
-from store.sqlite_store import SqliteTodoStore
+from store.SqliteTodoStore import SqliteTodoStore
 from service.todo_service import TodoService
 
 store = SqliteTodoStore()

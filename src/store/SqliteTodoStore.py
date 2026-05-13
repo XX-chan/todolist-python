@@ -12,7 +12,7 @@ class SqliteTodoStore:
     def _create_table(self):
         self.conn.execute(""" 
         CREATE TABLE IF NOT EXISTS todos(
-            id INTEGER PRIMARY KEY,
+            todo_id INTEGER PRIMARY KEY,
             title TEXT,
             completed BOOLEAN,
             completed_at DATE,
@@ -25,25 +25,37 @@ class SqliteTodoStore:
 
         for todo in todos:
             self.conn.execute("""
-                INSERT INTO todos (id, title, completed) 
-                VALUES(?, ?, ?)
+                INSERT INTO todos (todo_id, title, completed, user_id) 
+                VALUES(?, ?, ?, ?)
             """,
-                (todo.id, todo.title, todo.completed))
+                (todo.todo_id, todo.title, todo.completed, todo.user_id))
         
         self.conn.commit()
 
 
     def load(self):
-        cursor = self.conn.execute('SELECT id, title, completed FROM todos')
+        cursor = self.conn.execute("""SELECT todo_id,title,
+        completed,completed_at,user_id FROM todos""")
         #获取所选择的列数据的所有行；返回的是元祖列表。
         rows = cursor.fetchall()
 
         todos = []
         for row in rows:
-            todo = Todo(row[0], row[1], bool(row[2]))
+            todo = Todo(*row)
             todos.append(todo)
 
         return todos
+
+
+    def list_by_user(self,user_id):
+        cursor = self.conn.execute("""
+            SELECT todo_id,title,completed,completed_at,user_id FROM todos
+            WHERE user_id = ?
+        """, 
+            (user_id,))
+        rows=cursor.fetchall()
+        return [Todo(*row) for row in rows]
+
 
 
         

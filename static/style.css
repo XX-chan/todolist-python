@@ -11,6 +11,7 @@
         }
 
         button{
+            width: 300px;
             padding: 8px 12px;
         }
 
@@ -22,4 +23,8 @@
         .completed {
             color:gray;
             text-decoration: line-through;
+        }
+
+        .center{
+            text-align: center;
         }

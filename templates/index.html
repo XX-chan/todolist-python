@@ -16,7 +16,7 @@
     <ul>
         {% for todo in todos %}
             <li class="{% if todo.completed %} completed {% endif %}">
-                [{{ '√' if todo.completed else ' '}}] {{ todo.id }} : {{ todo.title }}
+                [{{ '√' if todo.completed else ' '}}] {{ todo.todo_id }} : {{ todo.title }}
                 {% if todo.completed %}
                     {% if todo.completed_at %}
                         ✅️ {{ todo.completed_at }}
