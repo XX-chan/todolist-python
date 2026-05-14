@@ -24,20 +24,20 @@
                 {% endif %}
 
                 {% if todo.completed %}
-                    <a href="/complete/{{ todo.id }}">
+                    <a href="/complete/{{ todo.todo_id }}">
                         取消
                     </a>
                 {% else %}
-                    <a href="/complete/{{ todo.id }}">
+                    <a href="/complete/{{ todo.todo_id }}">
                         完成
                     </a>
                 {% endif %}
                     
-                <a href="/delete/{{ todo.id }}">
+                <a href="/delete/{{ todo.todo_id }}">
                     删除
                 </a>
                 
-                <a href="/edit/{{ todo.id}}">
+                <a href="/edit/{{ todo.todo_id}}">
                     编辑
                 </a>
             </li>

@@ -19,34 +19,18 @@ class SqliteTodoStore:
             user_id INTEGER  )""")
         self.conn.commit()   # commit代表真正写进硬盘
 
-    # 现在的save是全量覆盖，先清空数据库，再把内存的todos写进去。
-    def save(self, todos):
-        self.conn.execute('DELETE FROM todos')
+    
+    def add(self,title,user_id):
+        cursor = self.conn.execute("""
+            INSERT INTO todos (title,completed,completed_at,user_id)
+            VALUES(?, ?, ?, ?)
+        """, (title,False,None,user_id))
+        # SQL自动生成id,因此不需要insert todo_id。
 
-        for todo in todos:
-            self.conn.execute("""
-                INSERT INTO todos (todo_id, title, completed, user_id) 
-                VALUES(?, ?, ?, ?)
-            """,
-                (todo.todo_id, todo.title, todo.completed, todo.user_id))
-        
         self.conn.commit()
+        return cursor.lastrowid
 
-
-    def load(self):
-        cursor = self.conn.execute("""SELECT todo_id,title,
-        completed,completed_at,user_id FROM todos""")
-        #获取所选择的列数据的所有行；返回的是元祖列表。
-        rows = cursor.fetchall()
-
-        todos = []
-        for row in rows:
-            todo = Todo(*row)
-            todos.append(todo)
-
-        return todos
-
-
+    # 相当于读取功能，读取对应user_id的数据。
     def list_by_user(self,user_id):
         cursor = self.conn.execute("""
             SELECT todo_id,title,completed,completed_at,user_id FROM todos
@@ -55,8 +39,65 @@ class SqliteTodoStore:
             (user_id,))
         rows=cursor.fetchall()
         return [Todo(*row) for row in rows]
+    
+    # 更新complete状态
+    def toggle_completed(self,todo_id):
+        todo = self.find_todo(todo_id)
+        if not todo:
+            return None   # 表示没找到
+        
+        new_completed = not todo.completed
+
+        cursor = self.conn.execute("""
+            UPDATE todos
+            SET completed = ?
+            WHERE todo_id = ?
+        """, (new_completed,todo_id))
+
+        self.conn.commit()
+        if cursor.rowcount == 0:
+            return None   # 没更新成功
+        return new_completed
+    
+    # 更新title
+    def update_title(self,title,todo_id):
+        cursor = self.conn.execute("""
+            UPDATE todos
+            SET title = ?
+            WHERE todo_id = ?                                                 
+        """, (title,todo_id))
+        self.conn.commit()
+        return cursor.rowcount > 0
+    
+    # 更新completed_at
+    def update_completed_at(self,completed_at,todo_id):
+        cursor = self.conn.execute("""
+            UPDATE todos
+            SET completed_at = ?
+            WHERE todo_id = ?                           
+        """, (completed_at,todo_id))
+        self.conn.commit()
+        return cursor.rowcount > 0
 
 
+    def delete(self,todo_id,user_id):
+        cursor = self.conn.execute("""
+            DELETE FROM todos
+            WHERE todo_id = ? AND user_id = ?                  
+        """, (todo_id,user_id))
+        self.conn.commit()
+        return cursor.rowcount > 0
 
+
+    def find_todo(self,todo_id):
+        cursor = self.conn.execute("""
+            SELECT todo_id,title,completed,completed_at,user_id
+            FROM todos
+            WHERE todo_id=?               
+        """, (todo_id,))
+        row = cursor.fetchone()
+        if row:
+            return Todo(*row)
+        return None
         
             

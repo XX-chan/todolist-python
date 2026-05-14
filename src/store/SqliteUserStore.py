@@ -35,3 +35,5 @@ class SqliteUserStore:
         if row:
             return User(*row)
         return None
+    
+  

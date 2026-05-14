@@ -17,6 +17,8 @@ app = Flask(__name__)
 store = SqliteTodoStore()
 service = TodoService(store)
 
+user_store = SqliteUserStore()
+
 app.secret_key = "你的随机密钥"
 
 # 装饰器，当浏览器访问/首页时，调用home(),
@@ -37,7 +39,6 @@ def register():
         password = request.form["password"]
         password_hash = generate_password_hash(password)
         user = User(user_id=None, username=username, password_hash=password_hash)
-        user_store = SqliteUserStore()
         user_store.add(user)  # 用户保存到数据库
         return redirect(url_for("login"))
     return render_template("register.html")
@@ -49,7 +50,6 @@ def login():
     if request.method=="POST":
         username = request.form["username"]
         password = request.form["password"]
-        user_store = SqliteUserStore()
         user = user_store.get_by_username(username)
         if user and check_password_hash(user.password_hash,password):
             session["user_id"]=user.user_id   # 记住这个用户已经登录。
@@ -70,29 +70,35 @@ def logout():
 def add():
     title = request.form.get("title")
     user_id = session.get("user_id")
-    if title:
-        service.add(title,user_id)
+    service.add(title,user_id)
     return redirect(url_for("home"))
+
 
 @app.route("/delete/<int:todo_id>")
 def delete(todo_id):
-    service.remove(todo_id)
+    user_id = session.get("user_id")
+    service.remove(todo_id,user_id)
     return redirect(url_for("home"))
+
 
 @app.route("/complete/<int:todo_id>")
 def complete(todo_id):
-    service.complete(todo_id)
+    user_id = session.get("user_id")
+    service.complete(todo_id,user_id)
     return redirect(url_for("home"))
+
 
 @app.route("/edit/<int:todo_id>")
 def edit_page(todo_id):
-    todo=service.find_todo(todo_id)
+    todo=store.find_todo(todo_id)
     return render_template("edit.html",todo=todo)
+
 
 @app.route("/edit/<int:todo_id>",methods=["POST"])
 def edit(todo_id):
     title=request.form.get("title")
-    service.update(todo_id,title)
+    user_id = session.get("user_id")
+    service.edit(todo_id,title,user_id)
     return redirect(url_for("home"))
 
 # 确保只有直接运行这个文件时才能执行内部代码，import无效。

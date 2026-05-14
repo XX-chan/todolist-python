@@ -3,6 +3,7 @@
             font-family: Arial;
             width: 600px;
             margin: 40px auto;
+            
         }
         
         input{
@@ -11,8 +12,13 @@
         }
 
         button{
-            width: 300px;
-            padding: 8px 12px;
+            font-size: 15px;
+            width: 100px;
+            padding: 8px;
+            border:none;
+            border-radius: 5px;
+            font-weight: bold;
+         
         }
 
         li {

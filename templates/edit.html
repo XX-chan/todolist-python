@@ -2,13 +2,13 @@
 <html>
     <head>
         <title>Edit Todo</title>
-        <link rel="stylesheet" href="/static/style.css">
+        <link rel="stylesheet" href="/static/login_style.css">
     </head>
 
     <body>
         <h1>编辑任务</h1>
 
-        <form action="/edit/{{ todo.id }}" method="post">
+        <form action="/edit/{{ todo.todo_id }}" method="post">
             <input type="text" name="title" value="{{ todo.title }}">
             <button type="submit">保存</button>
         </form>
