@@ -8,9 +8,36 @@
     <body>
         <h1>编辑任务</h1>
 
-        <form action="/edit/{{ todo.todo_id }}" method="post">
-            <input type="text" name="title" value="{{ todo.title }}">
-            <button type="submit">保存</button>
-        </form>
+        
+        <input type="text" id="title">
+        <button onclick="save()">保存</button>
+        
+
+        <script>
+            const todoId=window.location.pathname.split("/").pop()
+            fetch(`/api/todo/${todoId}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("title").value=data.title
+                })
+
+            function save() {
+                const title=document.getElementById("title").value
+                fetch(`/edit/${todoId}`,{
+                    method:"PUT",
+                    headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify({
+                        title:title
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        location.href="/"
+                    }
+                })
+
+            }
+        </script>
     </body>
 </html>

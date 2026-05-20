@@ -8,41 +8,131 @@
 <body>
     <h1>Todo List</h1>
 
-    <form action="/add" method="post">
-        <input type="text" name="title" placeholder="输入任务"> 
-        <button type="submit">添加</button>
-    </form>
+  
+    <input type="text" id="title" placeholder="输入任务"> 
+    <button id="addBtn">添加</button>
+ 
+    <ul id="todo-list"> </ul>
 
-    <ul>
-        {% for todo in todos %}
-            <li class="{% if todo.completed %} completed {% endif %}">
-                [{{ '√' if todo.completed else ' '}}] {{ todo.todo_id }} : {{ todo.title }}
-                {% if todo.completed %}
-                    {% if todo.completed_at %}
-                        ✅️ {{ todo.completed_at }}
-                    {% endif %}
-                {% endif %}
+<script>
+    //展示TodoList
+    fetch("/api/todos")
+        .then(response => response.json())
+        .then(data => {
+            const todoList=document.getElementById("todo-list")
+            data.forEach(todo => {
+                todoList.appendChild(renderTodo(todo))
+            });
 
-                {% if todo.completed %}
-                    <a href="/complete/{{ todo.todo_id }}">
-                        取消
-                    </a>
-                {% else %}
-                    <a href="/complete/{{ todo.todo_id }}">
-                        完成
-                    </a>
-                {% endif %}
-                    
-                <a href="/delete/{{ todo.todo_id }}">
-                    删除
-                </a>
+            
+        })
+
+        //添加任务
+        const input=document.getElementById("title")
+
+        const button=document.getElementById("addBtn")
+        button.onclick=function() {
+            addTodo()
+        }
+
+
+        function renderTodo(todo){
+            const li=document.createElement("li")
+            li.className="todo-item"
+            const span=document.createElement("span")
+            //title
+            span.textContent=todo.title
+            li.appendChild(span)
+
+            //完成按钮
+            const completedBtn=document.createElement("button")
+            if(todo.completed){
+                completedBtn.textContent="取消完成"
+            }else{
+                completedBtn.textContent="完成"
+            }
+
+            completedBtn.onclick=function(){
+                complete(todo.todo_id)
+            }
+            li.appendChild(completedBtn)
+
+            //删除按钮
+            const deleteBtn=document.createElement("button")
+            deleteBtn.textContent="删除"
+            //点击事件
+            deleteBtn.onclick=function() {
+                deleteTodo(todo.todo_id)
+            }
+            //加进li
+            li.appendChild(deleteBtn)
+
+            //编辑按钮
+            const editBtn=document.createElement("button")
+            editBtn.textContent="编辑"
                 
-                <a href="/edit/{{ todo.todo_id}}">
-                    编辑
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+            editBtn.onclick=function() {
+                location.href=`/edit/${todo.todo_id}`
+            }
+            li.appendChild(editBtn)
 
+            return li
+        }
+    
+
+        function addTodo(){
+            fetch("/add",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    title:input.value
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        const todoList=document.getElementById("todo-list")
+                        todoList.appendChild(renderTodo(todo))
+
+                    }
+                })
+
+
+        }
+
+        function deleteTodo(todo_id){
+            fetch(`/delete/${todo_id}`,{
+                method:"DELETE"
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        location.reload()
+                    }
+                })
+            
+        }
+
+        function complete(todo_id){
+            fetch(`/complete/${todo_id}`,{
+                method:"POST"
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        location.reload()
+                    }
+                })
+        }
+
+
+      
+
+
+   
+
+</script>
 </body>
 </html>

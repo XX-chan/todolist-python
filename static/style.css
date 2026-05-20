@@ -34,3 +34,10 @@
         .center{
             text-align: center;
         }
+
+        .todo-item{
+            display:flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px;
+        }

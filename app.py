@@ -1,4 +1,4 @@
-from flask import Flask, request,render_template,redirect,url_for,session
+from flask import Flask, request,render_template,redirect,url_for,session,jsonify
 import sys
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -20,6 +20,24 @@ service = TodoService(store)
 user_store = SqliteUserStore()
 
 app.secret_key = "你的随机密钥"
+
+@app.route("/api/todos")
+def api_todos():
+    user_id = session.get("user_id")
+    todos = service.get_user_todos(user_id)
+    result = []
+
+    for todo in todos:
+        result.append({
+            "todo_id": todo.todo_id,
+            "title": todo.title,
+            "completed": todo.completed,
+            "completed_at": todo.completed_at
+        })
+        
+    return jsonify(result)
+
+
 
 # 装饰器，当浏览器访问/首页时，调用home(),
 @app.route("/")
@@ -68,38 +86,54 @@ def logout():
 
 @app.route("/add", methods=["POST"])
 def add():
-    title = request.form.get("title")
+    title = request.json.get("title")
     user_id = session.get("user_id")
     service.add(title,user_id)
-    return redirect(url_for("home"))
+    return jsonify({
+        "success":True
+    })
 
 
-@app.route("/delete/<int:todo_id>")
+@app.route("/delete/<int:todo_id>",methods=["DELETE"])
 def delete(todo_id):
     user_id = session.get("user_id")
     service.remove(todo_id,user_id)
-    return redirect(url_for("home"))
+    return jsonify({
+        "success":True
+    })
 
 
-@app.route("/complete/<int:todo_id>")
+@app.route("/complete/<int:todo_id>",methods=["POST"])
 def complete(todo_id):
     user_id = session.get("user_id")
     service.complete(todo_id,user_id)
-    return redirect(url_for("home"))
+    return jsonify({
+        "success":True
+    })
 
 
 @app.route("/edit/<int:todo_id>")
 def edit_page(todo_id):
+    return render_template("edit.html")
+
+@app.route("/api/todo/<int:todo_id>")
+def get_todo(todo_id):
     todo=store.find_todo(todo_id)
-    return render_template("edit.html",todo=todo)
+    return jsonify({
+        "todo_id":todo.todo_id,
+        "title":todo.title,
+        "completed":todo.completed
+    })
 
 
-@app.route("/edit/<int:todo_id>",methods=["POST"])
+@app.route("/edit/<int:todo_id>",methods=["PUT"])
 def edit(todo_id):
-    title=request.form.get("title")
+    title=request.json.get("title")
     user_id = session.get("user_id")
     service.edit(todo_id,title,user_id)
-    return redirect(url_for("home"))
+    return jsonify({
+        "success":True
+    })
 
 # 确保只有直接运行这个文件时才能执行内部代码，import无效。
 if __name__ == "__main__":
