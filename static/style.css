@@ -41,3 +41,18 @@
             gap: 10px;
             padding: 6px;
         }
+
+        .btn-complete {
+            background: #7cc77f;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #ad5953;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #7eacd2;
+            color: white;
+        }
