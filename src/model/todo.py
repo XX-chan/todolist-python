@@ -11,3 +11,11 @@ class Todo:
         return f"[{' √ ' if self.completed else '   '}] {self.todo_id}: {self.title} {self.completed_at}"
     
     
+    def to_dict(self):
+        return {
+            "todo_id":self.todo_id,
+            "title":self.title,
+            "completed":self.completed,
+            "completed_at":self.completed_at
+        }
+    

@@ -8,7 +8,7 @@
 <body>
     <h1>登录页面</h1>
 
-    <form action="/login" method="post">
+    <form>
         <p>
             用户名：
             <input type="text" name="username" placeholder="输入用户名" required>
@@ -20,14 +20,46 @@
         </p>
 
         <p class="center">
-            <button type="submit">登录</button>
+            <button id="loginBtn">登录</button>
         </p>
 
     </form>
 
+
+
     <p class="center">
         <a class="btn" href="/register">前往注册</a>
     </p>
+
+    <script>
+        document.getElementById("loginBtn").addEventListener("click",function(e) {
+            e.preventDefault();  //阻止form默认提交
+
+            const username=document.querySelector("input[name='username']").value;
+            const password=document.querySelector("input[name='password']").value;
+
+            fetch("/api/login", {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    "username":username,
+                    "password":password
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    window.location.href="/"
+                } else {
+                    alert(data.message)
+                }
+
+            })
+        })
+        
+    </script>
 
 </body>
 

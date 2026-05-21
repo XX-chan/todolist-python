@@ -21,33 +21,28 @@ user_store = SqliteUserStore()
 
 app.secret_key = "你的随机密钥"
 
+# 数据接口
 @app.route("/api/todos")
 def api_todos():
     user_id = session.get("user_id")
     todos = service.get_user_todos(user_id)
     result = []
 
-    for todo in todos:
-        result.append({
-            "todo_id": todo.todo_id,
-            "title": todo.title,
-            "completed": todo.completed,
-            "completed_at": todo.completed_at
-        })
+    for t in todos:
+        result.append(t.to_dict())
         
     return jsonify(result)
 
 
 
-# 装饰器，当浏览器访问/首页时，调用home(),
+# 首页：返回 HTML 壳页面；待办数据由 /api/todos 提供
 @app.route("/")
 def home():
-    user_id = session.get("user_id")
-    if not user_id:
-        return redirect(url_for("login"))
-    todos=service.get_user_todos(user_id)
-    todos_sorted = sorted(todos,key=lambda t:t.completed)
-    return render_template("index.html", todos = todos_sorted)
+    if not session.get("user_id"):
+        return redirect(url_for("login_page"))
+    return render_template("index.html")
+
+
 
 # 注册
 @app.route("/register", methods=["GET", "POST"])
@@ -58,22 +53,30 @@ def register():
         password_hash = generate_password_hash(password)
         user = User(user_id=None, username=username, password_hash=password_hash)
         user_store.add(user)  # 用户保存到数据库
-        return redirect(url_for("login"))
+        return redirect(url_for("login_page"))
     return render_template("register.html")
 
 
 # 登录
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/api/login", methods=["POST"])
 def login():
-    if request.method=="POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        user = user_store.get_by_username(username)
-        if user and check_password_hash(user.password_hash,password):
-            session["user_id"]=user.user_id   # 记住这个用户已经登录。
-            return redirect(url_for("home"))
-        else:
-            return "用户名或密码错误"
+    username = request.json["username"]
+    password = request.json["password"]
+    user = user_store.get_by_username(username)
+    if user and check_password_hash(user.password_hash,password):
+        session["user_id"]=user.user_id   # 后端创建session。
+        return jsonify({
+            "success":True,
+            "message":"登陆成功"
+        })
+    else:
+        return jsonify({
+            "success":False,
+            "message":"用户名或密码错误"
+        }),401
+
+@app.route("/login")
+def login_page():
     return render_template("login.html")
 
 
@@ -81,7 +84,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop("user_id",None)
-    return redirect(url_for("login"))
+    return redirect(url_for("login_page"))
 
 
 @app.route("/add", methods=["POST"])
