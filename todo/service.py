@@ -22,9 +22,18 @@ class TodoService:
 
 
 
-    # 列出对应用户的todos
+    # 返回todo对象列表
     def get_user_todos(self,user_id):
         return self.store.list_by_user(user_id)
+    
+    # 返回一个字典，列出每个todo对象的具体内容。
+    def get_user_todos_dict(self,user_id):
+        todos = self.get_user_todos(user_id)
+        result = []
+        for t in todos:
+            result.append(t.to_dict())
+        return result
+
         
     
     # complete状态变化和completed_at 变化
