@@ -1,4 +1,4 @@
-from flask import Blueprint,url_prefix
+from flask import Blueprint
 from todo.routes import init_routes
 
 # 创建todo蓝图

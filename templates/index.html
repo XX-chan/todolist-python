@@ -63,7 +63,7 @@
         editBtn.textContent="编辑"
         editBtn.className="btn-edit"
         editBtn.onclick=() => {
-            location.href=`/edit/${todo.todo_id}`
+            location.href=`/todo/edit/${todo.todo_id}`
         }
         li.appendChild(editBtn)
 
@@ -72,7 +72,7 @@
     }
 
         //初始化
-        fetch("/api/todos")
+        fetch("/todo/api/todos")
             .then(res => res.json())
             .then(data => {
                 todos=data   //更新网页数据todos
@@ -91,7 +91,7 @@
 
 
         function addTodo(){
-            fetch("/add",{
+            fetch("/todo/add",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"
@@ -105,7 +105,7 @@
                     if(data.success) {
                         //添加任务成功后，浏览器发出请求。
                         //这步之后的操作与初始化的操作一样的。
-                        return fetch("/api/todos")
+                        return fetch("/todo/api/todos")
                     }
                 })
                 .then(res => res.json())
@@ -116,11 +116,11 @@
         }
 
         function deleteTodo(todo_id){
-            fetch(`/delete/${todo_id}`,{
+            fetch(`/todo/delete/${todo_id}`,{
                 method:"DELETE"
             })
                 .then(response => response.json())
-                .then(() => fetch("/api/todos"))
+                .then(() => fetch("/todo/api/todos"))
                 .then(res => res.json())
                 .then(data => {
                     todos=data
@@ -130,11 +130,11 @@
         }
 
         function complete(todo_id){
-            fetch(`/complete/${todo_id}`,{
+            fetch(`/todo/complete/${todo_id}`,{
                 method:"POST"
             })
                 .then(response => response.json())
-                .then(() => fetch("/api/todos"))
+                .then(() => fetch("/todo/api/todos"))
                 .then(res => res.json())
                 .then(data => {
                     todos=data

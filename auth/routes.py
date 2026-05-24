@@ -1,4 +1,4 @@
-from flask import Blueprint,request,session,jsonify,render_template,redirect,url_for
+from flask import request,session,jsonify,render_template,redirect,url_for
 
 
 # 此模块按业务分，负责：login、register、logout
@@ -23,7 +23,7 @@ def init_routes(bp,service):
         username = request.json["username"]
         password = request.json["password"]
         result = service.login(username,password)
-        if result != None:
+        if result:
             session["user_id"]=result.user_id   # 后端创建session。
             return jsonify({
                 "success":True,

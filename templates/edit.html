@@ -15,7 +15,7 @@
 
         <script>
             const todoId=window.location.pathname.split("/").pop()
-            fetch(`/api/todo/${todoId}`)
+            fetch(`/todo/api/todo/${todoId}`)
                 .then(res => res.json())
                 .then(data => {
                     document.getElementById("title").value=data.title
@@ -23,7 +23,7 @@
 
             function save() {
                 const title=document.getElementById("title").value
-                fetch(`/edit/${todoId}`,{
+                fetch(`/todo/edit/${todoId}`,{
                     method:"PUT",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify({
