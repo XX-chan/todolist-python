@@ -1,15 +1,16 @@
-from flask import Flask,redirect
+from config import get_config
+from flask import Flask
 
-
+# 工厂模式
 def create_app():
     app = Flask(__name__)
-    app.secret_key = "你的随机密钥"
+    app.config.from_object(get_config())
 
     from todo.store import SqliteTodoStore
     from auth.store import SqliteUserStore
     # 创建store
-    user_store = SqliteUserStore()
-    todo_store = SqliteTodoStore()
+    user_store = SqliteUserStore(db_path=app.config["USER_DB_PATH"])
+    todo_store = SqliteTodoStore(db_path=app.config["TODOS_DB_PATH"])
 
     from todo.service import TodoService
     from auth.service import AuthService
@@ -28,13 +29,3 @@ def create_app():
     app.register_blueprint(todo_bp)
 
     return app
-# 创建Flask app
-app=create_app()
-
-@app.route("/")
-def root():
-    return redirect("/todo/")
-
-# 只有被自己运行时才启动服务器
-if __name__ == "__main__":
-    app.run(debug=True)
