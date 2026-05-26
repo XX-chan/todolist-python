@@ -1,5 +1,5 @@
-from model.user import User
-from auth.store import SqliteUserStore
+from app.model.user import User
+from app.auth.store import SqliteUserStore
 from werkzeug.security import generate_password_hash,check_password_hash
 
 class AuthService:

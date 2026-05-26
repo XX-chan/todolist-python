@@ -1,4 +1,4 @@
-from model.todo import Todo
+from app.model.todo import Todo
 from datetime import datetime 
 
 class TodoService:

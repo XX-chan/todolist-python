@@ -1,5 +1,5 @@
 from flask import Blueprint
-from todo.routes import init_routes
+from app.todo.routes import init_routes
 
 # 创建todo蓝图
 def create_todo_blueprint(service,url_prefix="/todo"):

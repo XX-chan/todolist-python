@@ -1,5 +1,5 @@
 import sqlite3
-from model.todo import Todo
+from app.model.todo import Todo
 
 class SqliteTodoStore:
 

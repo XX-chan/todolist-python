@@ -1,5 +1,5 @@
 import sqlite3
-from model.user import User
+from app.model.user import User
 
 class SqliteUserStore:
     def __init__(self,db_path="data/users.db"):

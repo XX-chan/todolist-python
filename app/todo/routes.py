@@ -1,6 +1,7 @@
-from flask import Blueprint,session,jsonify,render_template,redirect,url_for,request
+from flask import session,jsonify,render_template,redirect,url_for,request
 
 def init_routes(bp,service):
+
 
     # 数据接口
     @bp.route("/api/todos")
